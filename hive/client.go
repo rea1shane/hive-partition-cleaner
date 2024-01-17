@@ -11,27 +11,27 @@ type Client struct {
 }
 
 // NewClient 新建一个 Hive 客户端
-func NewClient(host string, port int, username, password string) (Client, error) {
+func NewClient(host string, port int, username, password string) (*Client, error) {
 	configuration := gohive.NewConnectConfiguration()
 	configuration.Username = username
 	configuration.Password = password
 	connection, err := gohive.Connect(host, port, "NONE", configuration)
 	if err != nil {
-		return Client{}, err
+		return nil, err
 	}
-	return Client{connection: connection}, nil
+	return &Client{connection: connection}, nil
 }
 
 // NewClientByZookeeper 通过 ZooKeeper 新建一个 Hive 客户端
-func NewClientByZookeeper(zookeeperQuorum, username, password string) (Client, error) {
+func NewClientByZookeeper(zookeeperQuorum, username, password string) (*Client, error) {
 	configuration := gohive.NewConnectConfiguration()
 	configuration.Username = username
 	configuration.Password = password
 	connection, err := gohive.ConnectZookeeper(zookeeperQuorum, "NONE", configuration)
 	if err != nil {
-		return Client{}, err
+		return nil, err
 	}
-	return Client{connection: connection}, nil
+	return &Client{connection: connection}, nil
 }
 
 // Close 关闭客户端
@@ -40,7 +40,7 @@ func (c *Client) Close() error {
 }
 
 // ListPartitions 获取指定表的所有分区
-func (c Client) ListPartitions(ctx context.Context, db, table string) ([]string, error) {
+func (c *Client) ListPartitions(ctx context.Context, db, table string) ([]string, error) {
 	// 新建一个 cursor
 	cursor := c.connection.Cursor()
 	defer cursor.Close()
