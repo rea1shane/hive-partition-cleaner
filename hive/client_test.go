@@ -12,8 +12,6 @@ const (
 	zookeeperQuorum = ""
 	username        = ""
 	password        = ""
-	db              = "default"
-	table           = "test"
 )
 
 func TestNewClient(t *testing.T) {
@@ -39,15 +37,28 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
-func TestClient_ListPartitions(t *testing.T) {
+func TestClient_ShowPartitions(t *testing.T) {
 	client, err := NewClient(host, port, username, password)
 	if err != nil {
 		panic(err)
 	}
 	defer client.Close()
-	partitions, err := client.ListPartitions(context.Background(), db, table)
+	partitions, err := client.ShowPartitions(context.Background(), db, table)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(partitions)
+}
+
+// TODO fix
+func TestClient_AlterPartitions(t *testing.T) {
+	client, err := NewClient(host, port, username, password)
+	if err != nil {
+		panic(err)
+	}
+	defer client.Close()
+	err = client.AlterPartitions(context.Background(), db, table, targetPartitions)
+	if err != nil {
+		panic(err)
+	}
 }

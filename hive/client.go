@@ -2,7 +2,6 @@ package hive
 
 import (
 	"context"
-	"fmt"
 	"github.com/beltran/gohive"
 )
 
@@ -39,14 +38,14 @@ func (c *Client) Close() error {
 	return c.connection.Close()
 }
 
-// ListPartitions 获取指定表的所有分区
-func (c *Client) ListPartitions(ctx context.Context, db, table string) ([]string, error) {
+// ShowPartitions 获取指定表的所有分区
+func (c *Client) ShowPartitions(ctx context.Context, db, table string) ([]string, error) {
 	// 新建一个 cursor
 	cursor := c.connection.Cursor()
 	defer cursor.Close()
 
 	// 查询所有的分区
-	cursor.Exec(ctx, fmt.Sprintf("SHOW PARTITIONS %s.%s", db, table))
+	cursor.Exec(ctx, GenerateShowPartitionsSql(db, table))
 	if cursor.Error() != nil {
 		return nil, cursor.Error()
 	}
@@ -65,4 +64,20 @@ func (c *Client) ListPartitions(ctx context.Context, db, table string) ([]string
 	}
 
 	return partitions, nil
+}
+
+// AlterPartitions 修改目标表的目标分区
+func (c *Client) AlterPartitions(ctx context.Context, db, table string, partitions []string) error {
+	sql := GenerateAlterPartitionsSql(db, table, partitions)
+	if "" == sql {
+		return nil
+	}
+
+	// 新建一个 cursor
+	cursor := c.connection.Cursor()
+	defer cursor.Close()
+
+	// 执行 SQL
+	cursor.Exec(ctx, sql)
+	return cursor.Error()
 }
