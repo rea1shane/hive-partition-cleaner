@@ -63,7 +63,6 @@ func TestClient_ShowPartitions(t *testing.T) {
 	fmt.Println(partitions)
 }
 
-// TODO fix
 func TestClient_AlterPartitions(t *testing.T) {
 	client, err := NewClient(host, port, username, password)
 	if err != nil {
