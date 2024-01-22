@@ -9,23 +9,9 @@ type Client struct {
 }
 
 // NewClient 新建一个 HDFS 客户端
-func NewClient(address, username string) (*Client, error) {
-	client, err := hdfs.New(address)
-	if err != nil {
-		return nil, err
-	}
-	return &Client{client: client}, nil
-}
-
-// NewClientByHadoopConfig 通过 Hadoop 配置文件新建一个 HDFS 客户端
-func NewClientByHadoopConfig(hadoopConfigPath, username string) (*Client, error) {
-	hadoopConfig := hdfs.LoadHadoopConf(hadoopConfigPath)
-	namenodes, err := hadoopConfig.Namenodes()
-	if err != nil {
-		return nil, err
-	}
+func NewClient(username string, addresses ...string) (*Client, error) {
 	client, err := hdfs.NewClient(hdfs.ClientOptions{
-		Addresses: namenodes,
+		Addresses: addresses,
 		User:      username,
 	})
 	if err != nil {
