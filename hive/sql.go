@@ -5,6 +5,11 @@ import (
 	"strings"
 )
 
+// GenerateDescFormattedSql 生成
+func GenerateDescFormattedSql(db, table string) string {
+	return fmt.Sprintf("DESC FORMATTED %s.%s", db, table)
+}
+
 // GenerateShowPartitionsSql 生成列出所有分区的 SQL
 func GenerateShowPartitionsSql(db, table string) string {
 	return fmt.Sprintf("SHOW PARTITIONS %s.%s", db, table)

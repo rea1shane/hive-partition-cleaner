@@ -8,6 +8,10 @@ var (
 	targetPartitions = []string{"date=20231111", "date=20231112"}
 )
 
+func TestGenerateDescFormattedSql(t *testing.T) {
+	println(GenerateDescFormattedSql(db, table))
+}
+
 func TestGenerateShowPartitionsSql(t *testing.T) {
 	println(GenerateShowPartitionsSql(db, table))
 }

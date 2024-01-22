@@ -2,6 +2,7 @@ package hive
 
 import (
 	"context"
+	"errors"
 	"github.com/beltran/gohive"
 )
 
@@ -36,6 +37,32 @@ func NewClientByZookeeper(zookeeperQuorum, username, password string) (*Client, 
 // Close 关闭客户端
 func (c *Client) Close() error {
 	return c.connection.Close()
+}
+
+func (c *Client) GetLocation(ctx context.Context, db, table string) (string, error) {
+	// 新建一个 cursor
+	cursor := c.connection.Cursor()
+	defer cursor.Close()
+
+	// 查询模式
+	cursor.Exec(ctx, GenerateDescFormattedSql(db, table))
+	if cursor.Error() != nil {
+		return "", cursor.Error()
+	}
+
+	// 解析结果
+	var colName, dataType, comment string
+	for cursor.HasMore(ctx) {
+		cursor.FetchOne(ctx, &colName, &dataType, &comment)
+		if cursor.Error() != nil {
+			return "", cursor.Error()
+		}
+		if colName == "Location:           " {
+			return dataType, nil
+		}
+	}
+
+	return "", errors.New("not found")
 }
 
 // ShowPartitions 获取指定表的所有分区

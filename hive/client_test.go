@@ -37,6 +37,19 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
+func TestClient_GetLocation(t *testing.T) {
+	client, err := NewClient(host, port, username, password)
+	if err != nil {
+		panic(err)
+	}
+	defer client.Close()
+	location, err := client.GetLocation(context.Background(), db, table)
+	if err != nil {
+		panic(err)
+	}
+	println(location)
+}
+
 func TestClient_ShowPartitions(t *testing.T) {
 	client, err := NewClient(host, port, username, password)
 	if err != nil {
