@@ -33,15 +33,15 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
-func TestClient_Ls(t *testing.T) {
+func TestClient_ListPartitions(t *testing.T) {
 	client, err := NewClient(username, address)
 	if err != nil {
 		panic(err)
 	}
 	defer client.Close()
-	dirs, err := client.LsDirs(path)
+	partitions, err := client.ListPartitions(path)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(dirs)
+	fmt.Println(partitions)
 }

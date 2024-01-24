@@ -25,15 +25,15 @@ func (c *Client) Close() error {
 	return c.client.Close()
 }
 
-// LsDirs 列出指定路径下的所有文件夹
-func (c *Client) LsDirs(path string) (dirs []string, err error) {
+// ListPartitions 列出指定表存储路径下的所有分区
+func (c *Client) ListPartitions(path string) (partitions []string, err error) {
 	files, err := c.client.ReadDir(path)
 	if err != nil {
 		return
 	}
 	for _, file := range files {
 		if file.IsDir() {
-			dirs = append(dirs, file.Name())
+			partitions = append(partitions, file.Name())
 		}
 	}
 	return
